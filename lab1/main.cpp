@@ -94,6 +94,7 @@ void readData(vector<Fact*> &facts, vector<Rule*> &rules, char *filename) {
 		printf("%s %s %s => %s\n", rules[i]->getAntecedent()[0]->getName().c_str(), rules[i]->getRuleType().c_str(), 
 			rules[i]->getAntecedent()[1]->getName().c_str(), rules[i]->getConsequent()->getName().c_str());
 	}
+	printf("\n");
 }
 
 int main() {
@@ -101,6 +102,12 @@ int main() {
 	vector<Rule*> rules;
 
 	readData(facts, rules, "examples/data.txt");
+
+	Graph *graph = new Graph(facts, rules);
+
+	vector<Fact*> trueFacts(facts.begin(), facts.begin()+2);
+
+	graph->dataToTargetDFS(trueFacts, facts[4]);
 
 	return 0;
 }
