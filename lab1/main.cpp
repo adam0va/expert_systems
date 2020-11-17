@@ -34,7 +34,9 @@ int main() {
 
 	Graph *graph = new Graph(facts, rules); // Строим граф по прочитанным данным
 
-	graph->dataToTargetDFS(trueFacts, target); // Выолняем поиск от данных
+	//graph->dataToTargetDFS(trueFacts, target); // Выолняем поиск от данных
+
+	graph->targetToData(trueFacts, target);
 
 	return 0;
 }

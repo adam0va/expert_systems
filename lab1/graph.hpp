@@ -16,8 +16,12 @@ class Graph {
 public:
 	Graph(vector<Fact*>, vector<Rule*>);
 	bool dataToTargetDFS(vector<Fact*> trueFacts, Fact *target);
+	bool targetToData(vector<Fact*> trueFacts, Fact *target);
 	void addRulesToQueue(queue<Rule*> &rulesQueue);
 	bool canUseRule(Rule *rule);
+	vector<Rule*> findRulesWithTargetConsequent(Fact *target);
+	bool handleFact(vector<Fact*> trueFacts, Fact *target);
+	bool handleRule(vector<Fact*> trueFacts, Rule *rule);
 };
 
 #endif

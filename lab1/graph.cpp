@@ -1,6 +1,7 @@
 #include "fact.hpp"
 #include "rule.hpp"
 #include "graph.hpp"
+#include "read_data.hpp"
 #include <vector>
 #include <string>
 #include <queue>
@@ -71,6 +72,58 @@ bool Graph::dataToTargetDFS(vector<Fact*> trueFacts, Fact *target) {
 	ans ? printf("true\n") : printf("false\n");
 	return ans;
 }
+
+// Функция, осуществляюшая поиск правил, которые выводят заданную цель
+vector<Rule*> Graph::findRulesWithTargetConsequent(Fact *target) {
+	vector<Rule*> ans;
+	for (int i = 0; i < this->rules.size(); i++) {
+		if (rules[i]->getConsequent() == target)
+			ans.push_back(rules[i]);
+	}
+	return ans;
+}
+
+bool Graph::targetToData(vector<Fact*> trueFacts, Fact *target) {
+	bool ans = this->handleFact(trueFacts, target);
+	ans ? printf("true\n") : printf("false\n");
+	return ans;
+}
+
+// Фукнция, проверяющая, является ли заданный факт истинным
+bool Graph::handleFact(vector<Fact*> trueFacts, Fact *target) {
+	if (findFact(trueFacts, target->getName())) // Если факт есть в векторе истинных фактов, вернем true
+		return true;
+	vector<Rule*> rulesWithTargetConsequent = findRulesWithTargetConsequent(target); // Ищем правила, из которых выводится наша цель
+
+	for (int i = 0; i < rulesWithTargetConsequent.size(); i++) { // Проверяем, выводится ли из этих правил истина
+		if (this->handleRule(trueFacts, rulesWithTargetConsequent[i])) {
+			printf("%s %s %s -> %s\n", rulesWithTargetConsequent[i]->getAntecedent()[0]->getName().c_str(), 
+				rulesWithTargetConsequent[i]->getRuleType().c_str(), 
+				rulesWithTargetConsequent[i]->getAntecedent()[1]->getName().c_str(), 
+				rulesWithTargetConsequent[i]->getConsequent()->getName().c_str());
+			return true; // Если нашли хоть одно такое правило, то наша цель истинна
+		}
+	}
+	return false; // Если таких правил не было, то цель не может быть доказана
+}
+
+bool Graph::handleRule(vector<Fact*> trueFacts, Rule *rule) {
+	for (int i = 0; i < rule->getAntecedent().size(); i++) { // Проверяем каждый факт из антецедента
+		bool trueFact = this->handleFact(trueFacts, rule->getAntecedent()[i]);
+		if (trueFact && !strcmp(rule->getRuleType().c_str(), "|")) // Если факт истинен и правило "или", возвращаем true
+			return true;
+		if (!trueFact && !strcmp(rule->getRuleType().c_str(), "&")) // Если факт ложные и правило "и", возвращаем false
+			return false;
+	}
+	/* 
+	Если после проверки всех фактов из антецедента при правиле с "и" мы еще ничего не вернули, это значит,
+	что все факты истинны и можно вернуть true. 
+	Если после проверки всех фактов из антецедента при правиле с "или" мы еще ничего не вернули, это значит,
+	что все факты ложны и можно вернуть false. 
+	*/
+	return !strcmp(rule->getRuleType().c_str(), "&");
+}
+
 
 
 
