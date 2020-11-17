@@ -1,4 +1,7 @@
 a b c d e f g h
-a | b > d
-c | d > f
+b c
+e
 f & a > e
+a | b > d
+b & f > a
+c | d > f

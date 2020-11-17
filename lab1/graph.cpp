@@ -37,18 +37,20 @@ void Graph::addRulesToQueue(queue<Rule*> &rulesQueue) {
 	return;
 }
 
+// Функция поиска от данных, использующая поиск в глубину
 bool Graph::dataToTargetDFS(vector<Fact*> trueFacts, Fact *target) {
 	queue<Rule*> rulesQueue;
 	this->mem = trueFacts;
 	bool ans = false;
 	int iterCount = 0;
-	this->addRulesToQueue(rulesQueue);
+	this->addRulesToQueue(rulesQueue); // Добавляем правила в очередь правил
 
-	while (!rulesQueue.empty() && !ans) {
-		Rule *curRule = rulesQueue.front();
+	while (!rulesQueue.empty() && !ans) { // Пока очередь не пуста или ответ не стал положительным
+		Rule *curRule = rulesQueue.front(); // Рассмотрим первый элемент в очереди
 		rulesQueue.pop();
-		Fact *cons = curRule->getConsequent();
-		printf("Iteration: %d\n", iterCount);
+		Fact *cons = curRule->getConsequent(); // Рассмотрим его консеквент
+
+		printf("Iteration: %d\n", iterCount); // Вывыдем информацию о том, что на данной итерации рассматриваем
 		printf("Memory: ");
 		for (int i = 0; i < mem.size(); i++) {
 			printf("%s ", mem[i]->getName().c_str());
@@ -57,14 +59,14 @@ bool Graph::dataToTargetDFS(vector<Fact*> trueFacts, Fact *target) {
 			curRule->getAntecedent()[1]->getName().c_str(), curRule->getConsequent()->getName().c_str());
 		iterCount++;
 
-		if (cons == target)
+		if (cons == target) // Если консеквент рассматриваемого правила совпадает с целью, ответ положительный
 			ans = true;
 		
-		if (!cons->isWatched()) {
-			cons->setWatched(true);
-			mem.push_back(cons);
+		if (!cons->isWatched()) { // Если консеквент ранее не был рассмотрен
+			cons->setWatched(true); // Помечаем его как рассмотренный
+			mem.push_back(cons); // И добавляем в вектор истинных фактов
 		}
-		this->addRulesToQueue(rulesQueue);
+		this->addRulesToQueue(rulesQueue); // Добавляем правила в очередь правил
 	}
 	ans ? printf("true\n") : printf("false\n");
 	return ans;
