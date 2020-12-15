@@ -1,0 +1,7 @@
+IsRussian(Жигули) IsRussian(УАЗ) IsGerman(Mercedes) IsGerman(BMW) OwnedBy(Коля,Жигули) OwnedBy(Маша,BMW)
+CanSurviveWinter(x)
+
+IsRussian(x) > CanSurviveWinter(x)
+IsGerman(x) > IsExpensive(x)
+CanSurviveWinter(x), OwnedBy(n,x) > HaveLotOfCleaning(n)
+IsExpensive(x), OwnedBy(n,x) > HaveLotOfMoney(n)
